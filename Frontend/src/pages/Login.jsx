@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 export default function Login() {
 
   const navigate = useNavigate()
-
+  const API = import.meta.env.VITE_API_URL;
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -16,7 +16,7 @@ export default function Login() {
     try {
 
       const res = await axios.post(
-        "https://letsfocus-backend.onrender.com/api/auth/login",
+        `${API}/api/auth/login`,
         { email, password }
       )
 

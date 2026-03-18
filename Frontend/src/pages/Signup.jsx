@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 export default function Signup() {
 
   const navigate = useNavigate()
-
+  const API = import.meta.env.VITE_API_URL;
   const [name,setName] = useState("")
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
@@ -18,7 +18,7 @@ export default function Signup() {
     try {
 
       await axios.post(
-        "https://letsfocus-backend.onrender.com/api/auth/signup",
+        `${API}/api/auth/signup`,
         { name,email,password }
       )
 
