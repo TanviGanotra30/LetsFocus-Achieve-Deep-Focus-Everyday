@@ -27,10 +27,18 @@ export default function FocusSession() {
 
   }, [])
 
-  const totalMinutes = sessions.reduce(
-    (sum, session) => sum + session.duration,
-    0
-  )
+
+  const today = new Date().toDateString()
+
+const todaySessions = sessions.filter(
+  (session) =>
+    new Date(session.date || session.createdAt).toDateString() === today
+)
+
+const totalMinutes = todaySessions.reduce(
+  (sum, session) => sum + Number(session.duration),
+  0
+)
 
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
