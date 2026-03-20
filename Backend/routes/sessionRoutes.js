@@ -3,11 +3,22 @@ const router = express.Router()
 
 const { createSession,getUserSessions,getWeeklyStats,getContributionData,getStudyStreak} = require("../controllers/sessionController")
 
-router.post("/create", createSession)
-router.get("/user/:userId", getUserSessions)
-router.get("/weekly/:userId", getWeeklyStats)
-router.get("/contributions/:userId", getContributionData)
-router.get("/streak/:userId", getStudyStreak)
+const {
+  createSession,
+  getUserSessions,
+  getWeeklyStats,
+  getContributionData,
+  getStudyStreak
+} = require("../controllers/sessionController")
 
+const { protect } = require("../middleware/authMiddleware") // 🔥 ADD THIS
+
+router.post("/create", protect, createSession)
+router.get("/", protect, getUserSessions)
+router.get("/weekly", protect, getWeeklyStats)
+router.get("/contributions", protect, getContributionData)
+router.get("/streak", protect, getStudyStreak)
+
+module.exports = router
 module.exports = router
 

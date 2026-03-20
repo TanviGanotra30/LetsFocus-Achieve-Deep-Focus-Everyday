@@ -15,7 +15,8 @@ export default function FocusSession() {
 
     const fetchSessions = async () => {
       try {
-        const res = await getSessions(user._id)
+        const token = localStorage.getItem("token")
+        const res = await getSessions(token)
         setSessions(res.data)
       } catch (error) {
         console.log(error)

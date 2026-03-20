@@ -4,13 +4,15 @@ exports.createSession = async (req, res) => {
 
   try {
 
-    const { userId, duration, subject } = req.body
+    const { duration, subject } = req.body
 
-    const session = new Session({
-      userId,
-      duration,
-      subject
-    })
+const session = new Session({
+  userId: req.user.id,   // 🔥 FIXED
+  duration,
+  subject,
+  date: new Date() 
+})
+
 
     await session.save()
 
@@ -31,9 +33,7 @@ exports.getUserSessions = async (req, res) => {
 
   try {
 
-    const { userId } = req.params
-
-    const sessions = await Session.find({ userId })
+    const sessions = await Session.find({ userId: req.user.id })
 
     res.json(sessions)
 
@@ -48,9 +48,7 @@ exports.getWeeklyStats = async (req, res) => {
 
   try {
 
-    const { userId } = req.params
-
-    const sessions = await Session.find({ userId })
+    const sessions = await Session.find({ userId: req.user.id })
 
     const weekData = {
       Mon:0,
@@ -91,9 +89,7 @@ exports.getContributionData = async (req, res) => {
 
   try {
 
-    const { userId } = req.params
-
-    const sessions = await Session.find({ userId })
+    const sessions = await Session.find({ userId: req.user.id })
 
     const contributions = {}
 
@@ -124,9 +120,7 @@ exports.getStudyStreak = async (req, res) => {
 
   try {
 
-    const { userId } = req.params
-
-    const sessions = await Session.find({ userId })
+    const sessions = await Session.find({ userId: req.user.id })
 
     const dates = sessions.map(s =>
       new Date(s.date).toISOString().split("T")[0]
