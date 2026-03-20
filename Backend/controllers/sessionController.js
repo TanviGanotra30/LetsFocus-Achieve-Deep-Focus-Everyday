@@ -102,12 +102,19 @@ exports.getWeeklyStats = async (req, res) => {
   try {
     const { userId } = req.params
 
-    const startOfWeek = new Date()
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
-    startOfWeek.setHours(0, 0, 0, 0)
 
-    const endOfWeek = new Date(startOfWeek)
-    endOfWeek.setDate(endOfWeek.getDate() + 7)
+
+const today = new Date()
+const day = today.getDay()
+
+const diff = today.getDate() - day + (day === 0 ? -6 : 1)
+
+const startOfWeek = new Date(today.setDate(diff))
+startOfWeek.setHours(0, 0, 0, 0)
+
+const endOfWeek = new Date(startOfWeek)
+endOfWeek.setDate(endOfWeek.getDate() + 7)
+
 
     const sessions = await Session.find({
       userId,
