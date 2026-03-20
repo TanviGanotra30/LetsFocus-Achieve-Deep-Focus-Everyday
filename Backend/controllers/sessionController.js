@@ -246,7 +246,8 @@ exports.createSession = async (req, res) => {
     const session = new Session({
       userId: req.user.id,
       duration,
-      subject
+      subject,
+      date: new Date()
     })
 
     await session.save()
