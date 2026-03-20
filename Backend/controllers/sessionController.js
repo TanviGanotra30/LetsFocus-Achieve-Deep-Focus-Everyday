@@ -1,240 +1,3 @@
-// const Session = require("../models/Session")
-
-// exports.createSession = async (req, res) => {
-//   try {
-
-//     console.log("REQ.USER:", req.user)
-// console.log("REQ.BODY:", req.body)
-//     const duration = Number(req.body?.duration) || 0
-//     const subject = req.body?.subject || "General"
-
-//     const session = new Session({
-//       userId: req.user?.id,
-//       duration,
-//       subject,
-//       date: new Date()
-//     })
-
-//     await session.save()
-
-//     res.status(201).json({
-//       message: "Session saved successfully"
-//     })
-
-//   } catch (error) {
-//    console.log("ERROR:", error)
-// res.status(500).json({
-//   message: error.message
-// })
-//   }
-// }
-// exports.getUserSessions = async (req, res) => {
-
-//   try {
-
-//     const sessions = await Session.find({ userId: req.user.id })
-
-//     res.json(sessions)
-
-//   } catch (error) {
-
-//     res.status(500).json({ message: "Server error" })
-
-//   }
-// }
-
-// // exports.getWeeklyStats = async (req, res) => {
-
-// //   try {
-
-// //     const startOfWeek = new Date()
-// // startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()) // Sunday
-// // startOfWeek.setHours(0, 0, 0, 0)
-
-// // const endOfWeek = new Date(startOfWeek)
-// // endOfWeek.setDate(endOfWeek.getDate() + 7)
-
-// // const sessions = await Session.find({
-// //   userId,
-// //   createdAt: {
-// //     $gte: startOfWeek,
-// //     $lt: endOfWeek
-// //   }
-// // })
-
-// //     const weekData = {
-// //       Mon:0,
-// //       Tue:0,
-// //       Wed:0,
-// //       Thu:0,
-// //       Fri:0,
-// //       Sat:0,
-// //       Sun:0
-// //     }
-
-// //     sessions.forEach(session => {
-
-// //       const day = new Date(session.date).toLocaleString("en-US",{ weekday:"short" })
-
-// //       if(weekData[day] !== undefined){
-// //         weekData[day] += session.duration
-// //       }
-
-// //     })
-
-// //     const chartData = Object.keys(weekData).map(day => ({
-// //       day,
-// //       minutes: weekData[day]
-// //     }))
-
-// //     res.json(chartData)
-
-// //   } catch (error) {
-
-// //     res.status(500).json({ message:"Server error" })
-
-// //   }
-
-// // }
-
-
-// exports.getWeeklyStats = async (req, res) => {
-//   try {
-//     const { userId } = req.params
-
-
-
-// const today = new Date()
-// const day = today.getDay()
-
-// const diff = today.getDate() - day + (day === 0 ? -6 : 1)
-
-// const startOfWeek = new Date(today.setDate(diff))
-// startOfWeek.setHours(0, 0, 0, 0)
-
-// const endOfWeek = new Date(startOfWeek)
-// endOfWeek.setDate(endOfWeek.getDate() + 7)
-
-
-//     const sessions = await Session.find({
-//       userId,
-//       createdAt: {
-//         $gte: startOfWeek,
-//         $lt: endOfWeek
-//       }
-//     })
-
-//     const weekData = {
-//       Mon: 0,
-//       Tue: 0,
-//       Wed: 0,
-//       Thu: 0,
-//       Fri: 0,
-//       Sat: 0,
-//       Sun: 0
-//     }
-
-//     sessions.forEach(session => {
-//       const day = new Date(session.createdAt).toLocaleString("en-US", {
-//         weekday: "short"
-//       })
-
-//       if (weekData[day] !== undefined) {
-//         weekData[day] += session.duration
-//       }
-//     })
-
-//     const chartData = Object.keys(weekData).map(day => ({
-//       day,
-//       minutes: weekData[day]
-//     }))
-
-//     res.json(chartData)
-
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error" })
-//   }
-// }
-
-
-
-
-
-// exports.getContributionData = async (req, res) => {
-
-//   try {
-
-//     const sessions = await Session.find({ userId: req.user.id })
-
-//     const contributions = {}
-
-//     sessions.forEach(session => {
-
-//       const date = new Date(session.date).toISOString().split("T")[0]
-
-//       contributions[date] = (contributions[date] || 0) + session.duration
-
-//     })
-
-//     const result = Object.keys(contributions).map(date => ({
-//       date,
-//       count: contributions[date]
-//     }))
-
-//     res.json(result)
-
-//   } catch (error) {
-
-//     res.status(500).json({ message: "Server error" })
-
-//   }
-
-// }
-
-// exports.getStudyStreak = async (req, res) => {
-
-//   try {
-
-//     const sessions = await Session.find({ userId: req.user.id })
-
-//     const dates = sessions.map(s =>
-//       new Date(s.date).toISOString().split("T")[0]
-//     )
-
-//     const uniqueDates = [...new Set(dates)].sort()
-
-//     let streak = 0
-//     let today = new Date()
-
-//     for (let i = uniqueDates.length - 1; i >= 0; i--) {
-
-//       const sessionDate = new Date(uniqueDates[i])
-//       const diff =
-//         Math.floor((today - sessionDate) / (1000 * 60 * 60 * 24))
-
-//       if (diff === streak) {
-//         streak++
-//       } else {
-//         break
-//       }
-
-//     }
-
-//     res.json({ streak })
-
-//   } catch (error) {
-
-//     res.status(500).json({ message: "Server error" })
-
-//   }
-
-// }
-
-
-
-
-
-
 const Session = require("../models/Session")
 
 // ================= CREATE SESSION =================
@@ -247,7 +10,7 @@ exports.createSession = async (req, res) => {
       userId: req.user.id,
       duration,
       subject,
-      date: new Date()
+      date: new Date() // ✅ consistent field
     })
 
     await session.save()
@@ -267,110 +30,38 @@ exports.createSession = async (req, res) => {
 exports.getUserSessions = async (req, res) => {
   try {
     const sessions = await Session.find({ userId: req.user.id })
-      .sort({ createdAt: -1 })
+      .sort({ date: -1 }) // ✅ use date
 
     res.json(sessions)
 
   } catch (error) {
+    console.error("GET SESSIONS ERROR:", error)
     res.status(500).json({ message: "Server error" })
   }
 }
 
 
 // ================= WEEKLY STATS =================
-// exports.getWeeklyStats = async (req, res) => {
-//   try {
-//     const userId = req.user.id
-
-//     const today = new Date(new Date().toLocaleString("en-US", {
-//   timeZone: "Asia/Kolkata"
-// }))
-
-//     // 🟢 START OF WEEK (MONDAY)
-//     const day = today.getDay()
-//     const diff = today.getDate() - day + (day === 0 ? -6 : 1)
-
-//     // const startOfWeek = new Date(today)
-//     // startOfWeek.setDate(diff)
-//     // startOfWeek.setHours(0, 0, 0, 0)
-
-//     // const endOfWeek = new Date(startOfWeek)
-//     // endOfWeek.setDate(endOfWeek.getDate() + 7)
-
-//     const firstDayOfWeek = new Date(today)
-// firstDayOfWeek.setHours(0, 0, 0, 0)
-// firstDayOfWeek.setDate(today.getDate() - today.getDay())
-
-// const lastDayOfWeek = new Date(firstDayOfWeek)
-// lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
-// lastDayOfWeek.setHours(23, 59, 59, 999)
-
-//     const sessions = await Session.find({
-//       userId: req.user.id,
-//       date: {
-//         $gte: startOfWeek,
-//         $lt: endOfWeek
-//       }
-//     })
-
-//     const weekData = {
-//       Mon: 0,
-//       Tue: 0,
-//       Wed: 0,
-//       Thu: 0,
-//       Fri: 0,
-//       Sat: 0,
-//       Sun: 0
-//     }
-
-//      sessions.forEach(session => {
-//     //   const dayName = new Date(session.createdAt).toLocaleString("en-US", {
-//     //     weekday: "short"
-//     //   })
-//     const day = new Date(session.date).toLocaleString("en-US", {
-//   weekday: "short",
-//   timeZone: "Asia/Kolkata"
-// })
-
-//       if (weekData[dayName] !== undefined) {
-//         weekData[dayName] += Number(session.duration) || 0
-//       }
-//     })
-
-//     const chartData = Object.keys(weekData).map(day => ({
-//       day,
-//       minutes: weekData[day]
-//     }))
-
-//     res.json(chartData)
-
-//   } catch (error) {
-//     console.log("WEEKLY ERROR:", error)
-//     res.status(500).json({ message: error.message })
-//   }
-// }
-
-
-
 exports.getWeeklyStats = async (req, res) => {
   try {
 
-    const now = new Date()
+    const userId = req.user?.id
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
 
-    // Convert to IST manually (+5:30)
-    const IST_OFFSET = 5.5 * 60 * 60 * 1000
-    const istNow = new Date(now.getTime() + IST_OFFSET)
+    const today = new Date()
 
-    const firstDayOfWeek = new Date(istNow)
+    const firstDayOfWeek = new Date(today)
     firstDayOfWeek.setHours(0, 0, 0, 0)
-    firstDayOfWeek.setDate(istNow.getDate() - istNow.getDay())
+    firstDayOfWeek.setDate(today.getDate() - today.getDay())
 
     const lastDayOfWeek = new Date(firstDayOfWeek)
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
     lastDayOfWeek.setHours(23, 59, 59, 999)
 
     const sessions = await Session.find({
-      userId: req.user.id,
+      userId,
       date: {
         $gte: firstDayOfWeek,
         $lte: lastDayOfWeek
@@ -378,25 +69,26 @@ exports.getWeeklyStats = async (req, res) => {
     })
 
     const weekData = {
-      Sun:0,
-      Mon:0,
-      Tue:0,
-      Wed:0,
-      Thu:0,
-      Fri:0,
-      Sat:0
+      Sun: 0,
+      Mon: 0,
+      Tue: 0,
+      Wed: 0,
+      Thu: 0,
+      Fri: 0,
+      Sat: 0
     }
 
     sessions.forEach(session => {
+      if (!session.date) return
 
-      const istDate = new Date(new Date(session.date).getTime() + IST_OFFSET)
+      const d = new Date(session.date)
+      if (isNaN(d)) return
 
-      const day = istDate.toLocaleString("en-US", { weekday: "short" })
+      const day = d.toLocaleString("en-US", { weekday: "short" })
 
       if (weekData[day] !== undefined) {
-        weekData[day] += session.duration
+        weekData[day] += Number(session.duration) || 0
       }
-
     })
 
     const chartData = Object.keys(weekData).map(day => ({
@@ -407,26 +99,32 @@ exports.getWeeklyStats = async (req, res) => {
     res.json(chartData)
 
   } catch (error) {
-    console.error(error)  // 🔥 VERY IMPORTANT
-    res.status(500).json({ message: "Server error" })
+    console.error("WEEKLY ERROR:", error)
+    res.status(500).json({ message: error.message })
   }
 }
-
-
-
 
 
 // ================= CONTRIBUTION DATA =================
 exports.getContributionData = async (req, res) => {
   try {
-    const sessions = await Session.find({ userId: req.user.id })
+
+    const userId = req.user?.id
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    const sessions = await Session.find({ userId })
 
     const contributions = {}
 
     sessions.forEach(session => {
-      const date = new Date(session.createdAt)
-        .toISOString()
-        .split("T")[0]
+      if (!session.date) return
+
+      const d = new Date(session.date)
+      if (isNaN(d)) return
+
+      const date = d.toISOString().split("T")[0]
 
       contributions[date] =
         (contributions[date] || 0) + Number(session.duration)
@@ -440,7 +138,8 @@ exports.getContributionData = async (req, res) => {
     res.json(result)
 
   } catch (error) {
-    res.status(500).json({ message: "Server error" })
+    console.error("CONTRIBUTION ERROR:", error)
+    res.status(500).json({ message: error.message })
   }
 }
 
@@ -448,11 +147,22 @@ exports.getContributionData = async (req, res) => {
 // ================= STUDY STREAK =================
 exports.getStudyStreak = async (req, res) => {
   try {
-    const sessions = await Session.find({ userId: req.user.id })
 
-    const dates = sessions.map(s =>
-      new Date(s.createdAt).toISOString().split("T")[0]
-    )
+    const userId = req.user?.id
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    const sessions = await Session.find({ userId })
+
+    const dates = sessions
+      .map(s => {
+        if (!s.date) return null
+        const d = new Date(s.date)
+        if (isNaN(d)) return null
+        return d.toISOString().split("T")[0]
+      })
+      .filter(Boolean)
 
     const uniqueDates = [...new Set(dates)].sort()
 
@@ -476,6 +186,7 @@ exports.getStudyStreak = async (req, res) => {
     res.json({ streak })
 
   } catch (error) {
-    res.status(500).json({ message: "Server error" })
+    console.error("STREAK ERROR:", error)
+    res.status(500).json({ message: error.message })
   }
 }
