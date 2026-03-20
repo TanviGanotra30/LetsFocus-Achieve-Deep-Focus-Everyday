@@ -278,63 +278,125 @@ exports.getUserSessions = async (req, res) => {
 
 
 // ================= WEEKLY STATS =================
+// exports.getWeeklyStats = async (req, res) => {
+//   try {
+//     const userId = req.user.id
+
+//     const today = new Date(new Date().toLocaleString("en-US", {
+//   timeZone: "Asia/Kolkata"
+// }))
+
+//     // 🟢 START OF WEEK (MONDAY)
+//     const day = today.getDay()
+//     const diff = today.getDate() - day + (day === 0 ? -6 : 1)
+
+//     // const startOfWeek = new Date(today)
+//     // startOfWeek.setDate(diff)
+//     // startOfWeek.setHours(0, 0, 0, 0)
+
+//     // const endOfWeek = new Date(startOfWeek)
+//     // endOfWeek.setDate(endOfWeek.getDate() + 7)
+
+//     const firstDayOfWeek = new Date(today)
+// firstDayOfWeek.setHours(0, 0, 0, 0)
+// firstDayOfWeek.setDate(today.getDate() - today.getDay())
+
+// const lastDayOfWeek = new Date(firstDayOfWeek)
+// lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+// lastDayOfWeek.setHours(23, 59, 59, 999)
+
+//     const sessions = await Session.find({
+//       userId: req.user.id,
+//       date: {
+//         $gte: startOfWeek,
+//         $lt: endOfWeek
+//       }
+//     })
+
+//     const weekData = {
+//       Mon: 0,
+//       Tue: 0,
+//       Wed: 0,
+//       Thu: 0,
+//       Fri: 0,
+//       Sat: 0,
+//       Sun: 0
+//     }
+
+//      sessions.forEach(session => {
+//     //   const dayName = new Date(session.createdAt).toLocaleString("en-US", {
+//     //     weekday: "short"
+//     //   })
+//     const day = new Date(session.date).toLocaleString("en-US", {
+//   weekday: "short",
+//   timeZone: "Asia/Kolkata"
+// })
+
+//       if (weekData[dayName] !== undefined) {
+//         weekData[dayName] += Number(session.duration) || 0
+//       }
+//     })
+
+//     const chartData = Object.keys(weekData).map(day => ({
+//       day,
+//       minutes: weekData[day]
+//     }))
+
+//     res.json(chartData)
+
+//   } catch (error) {
+//     console.log("WEEKLY ERROR:", error)
+//     res.status(500).json({ message: error.message })
+//   }
+// }
+
+
+
 exports.getWeeklyStats = async (req, res) => {
   try {
-    const userId = req.user.id
 
-    const today = new Date(new Date().toLocaleString("en-US", {
-  timeZone: "Asia/Kolkata"
-}))
+    const now = new Date()
 
-    // 🟢 START OF WEEK (MONDAY)
-    const day = today.getDay()
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1)
+    // Convert to IST manually (+5:30)
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000
+    const istNow = new Date(now.getTime() + IST_OFFSET)
 
-    // const startOfWeek = new Date(today)
-    // startOfWeek.setDate(diff)
-    // startOfWeek.setHours(0, 0, 0, 0)
+    const firstDayOfWeek = new Date(istNow)
+    firstDayOfWeek.setHours(0, 0, 0, 0)
+    firstDayOfWeek.setDate(istNow.getDate() - istNow.getDay())
 
-    // const endOfWeek = new Date(startOfWeek)
-    // endOfWeek.setDate(endOfWeek.getDate() + 7)
-
-    const firstDayOfWeek = new Date(today)
-firstDayOfWeek.setHours(0, 0, 0, 0)
-firstDayOfWeek.setDate(today.getDate() - today.getDay())
-
-const lastDayOfWeek = new Date(firstDayOfWeek)
-lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
-lastDayOfWeek.setHours(23, 59, 59, 999)
+    const lastDayOfWeek = new Date(firstDayOfWeek)
+    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+    lastDayOfWeek.setHours(23, 59, 59, 999)
 
     const sessions = await Session.find({
       userId: req.user.id,
       date: {
-        $gte: startOfWeek,
-        $lt: endOfWeek
+        $gte: firstDayOfWeek,
+        $lte: lastDayOfWeek
       }
     })
 
     const weekData = {
-      Mon: 0,
-      Tue: 0,
-      Wed: 0,
-      Thu: 0,
-      Fri: 0,
-      Sat: 0,
-      Sun: 0
+      Sun:0,
+      Mon:0,
+      Tue:0,
+      Wed:0,
+      Thu:0,
+      Fri:0,
+      Sat:0
     }
 
-     sessions.forEach(session => {
-    //   const dayName = new Date(session.createdAt).toLocaleString("en-US", {
-    //     weekday: "short"
-    //   })
-    const day = new Date(session.date).toLocaleString("en-US", {
-  weekday: "short",
-  timeZone: "Asia/Kolkata"
-})
+    sessions.forEach(session => {
 
-      if (weekData[dayName] !== undefined) {
-        weekData[dayName] += Number(session.duration) || 0
+      const istDate = new Date(new Date(session.date).getTime() + IST_OFFSET)
+
+      const day = istDate.toLocaleString("en-US", { weekday: "short" })
+
+      if (weekData[day] !== undefined) {
+        weekData[day] += session.duration
       }
+
     })
 
     const chartData = Object.keys(weekData).map(day => ({
@@ -345,10 +407,13 @@ lastDayOfWeek.setHours(23, 59, 59, 999)
     res.json(chartData)
 
   } catch (error) {
-    console.log("WEEKLY ERROR:", error)
-    res.status(500).json({ message: error.message })
+    console.error(error)  // 🔥 VERY IMPORTANT
+    res.status(500).json({ message: "Server error" })
   }
 }
+
+
+
 
 
 // ================= CONTRIBUTION DATA =================
