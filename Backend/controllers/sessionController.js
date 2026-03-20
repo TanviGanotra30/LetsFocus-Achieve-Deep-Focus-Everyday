@@ -7,7 +7,7 @@ exports.createSession = async (req, res) => {
     const { duration, subject } = req.body
 
 const session = new Session({
-  userId: req.user.id,   // 🔥 FIXED
+  userId: req.user.id,   
   duration,
   subject,
   date: new Date() 
