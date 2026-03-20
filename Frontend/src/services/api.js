@@ -3,7 +3,15 @@ import axios from "axios"
 const API = axios.create({
   baseURL: "https://letsfocus-backend.onrender.com/api"
 })
+API.interceptors.request.use((req) => {
+  const token = localStorage.getItem("token")
 
+  if (token) {
+    req.headers.Authorization = `Bearer ${token}`
+  }
+
+  return req
+})
 export const saveSession = async (data) => {
   return API.post("/session/create", data)
 }
