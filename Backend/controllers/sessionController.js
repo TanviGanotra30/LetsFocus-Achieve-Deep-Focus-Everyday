@@ -42,6 +42,72 @@ exports.getUserSessions = async (req, res) => {
 
 
 // ================= WEEKLY STATS =================
+// exports.getWeeklyStats = async (req, res) => {
+//   try {
+
+//     const userId = req.user?.id
+//     if (!userId) {
+//       return res.status(401).json({ message: "Unauthorized" })
+//     }
+
+//     const today = new Date()
+
+//     const firstDayOfWeek = new Date(today)
+//     firstDayOfWeek.setHours(0, 0, 0, 0)
+//     firstDayOfWeek.setDate(today.getDate() - today.getDay())
+
+//     const lastDayOfWeek = new Date(firstDayOfWeek)
+//     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+//     lastDayOfWeek.setHours(23, 59, 59, 999)
+
+//     const sessions = await Session.find({
+//       userId,
+//       date: {
+//         $gte: firstDayOfWeek,
+//         $lte: lastDayOfWeek
+//       }
+//     })
+
+//     const weekData = {
+//       Sun: 0,
+//       Mon: 0,
+//       Tue: 0,
+//       Wed: 0,
+//       Thu: 0,
+//       Fri: 0,
+//       Sat: 0
+//     }
+
+//     sessions.forEach(session => {
+//       if (!session.date) return
+
+//       const d = new Date(session.date)
+//       if (isNaN(d)) return
+
+//       const day = d.toLocaleString("en-US", { weekday: "short" })
+
+//       if (weekData[day] !== undefined) {
+//         weekData[day] += Number(session.duration) || 0
+//       }
+//     })
+
+//     const chartData = Object.keys(weekData).map(day => ({
+//       day,
+//       minutes: weekData[day]
+//     }))
+
+//     res.json(chartData)
+
+//   } catch (error) {
+//     console.error("WEEKLY ERROR:", error)
+//     res.status(500).json({ message: error.message })
+//   }
+// }
+
+
+
+
+
 exports.getWeeklyStats = async (req, res) => {
   try {
 
@@ -52,13 +118,17 @@ exports.getWeeklyStats = async (req, res) => {
 
     const today = new Date()
 
+    // ✅ start of week (Sunday)
     const firstDayOfWeek = new Date(today)
-    firstDayOfWeek.setHours(0, 0, 0, 0)
     firstDayOfWeek.setDate(today.getDate() - today.getDay())
+    firstDayOfWeek.setHours(0, 0, 0, 0)
 
+    // ✅ end of week
     const lastDayOfWeek = new Date(firstDayOfWeek)
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
     lastDayOfWeek.setHours(23, 59, 59, 999)
+
+    console.log("WEEK RANGE:", firstDayOfWeek, lastDayOfWeek)
 
     const sessions = await Session.find({
       userId,
@@ -67,6 +137,8 @@ exports.getWeeklyStats = async (req, res) => {
         $lte: lastDayOfWeek
       }
     })
+
+    console.log("SESSIONS FOUND:", sessions)
 
     const weekData = {
       Sun: 0,
@@ -79,16 +151,11 @@ exports.getWeeklyStats = async (req, res) => {
     }
 
     sessions.forEach(session => {
-      if (!session.date) return
-
       const d = new Date(session.date)
-      if (isNaN(d)) return
 
       const day = d.toLocaleString("en-US", { weekday: "short" })
 
-      if (weekData[day] !== undefined) {
-        weekData[day] += Number(session.duration) || 0
-      }
+      weekData[day] += Number(session.duration) || 0
     })
 
     const chartData = Object.keys(weekData).map(day => ({
