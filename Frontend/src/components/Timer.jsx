@@ -14,25 +14,21 @@ export default function Timer({ subject }) {
   useEffect(() => {
 
     let timer
-
     const finishSession = async () => {
 
-      const user = JSON.parse(localStorage.getItem("user"))
+  const sessionData = {
+    duration: totalSeconds / 60,
+    subject: subject || "Focus Session"
+  }
 
-      const sessionData = {
-        userId: user._id,
-        duration: totalSeconds / 60,
-        subject: subject || "Focus Session"
-      }
+  try {
+    await saveSession(sessionData)
+    console.log("Session saved")
+  } catch (error) {
+    console.log(error)
+  }
 
-      try {
-        await saveSession(sessionData)
-        console.log("Session saved")
-      } catch (error) {
-        console.log(error)
-      }
-
-    }
+}
 
     if (isRunning && endTime) {
 

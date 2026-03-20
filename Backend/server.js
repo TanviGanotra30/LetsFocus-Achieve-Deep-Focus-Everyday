@@ -13,11 +13,12 @@ app.use(cors({
   origin: "*"
 }))
 
-app.use(express.json())
 
+app.use(express.json())
 app.use("/api/auth", authRoutes)
 app.use("/api/session", sessionRoutes)
 app.use("/api/ai", aiRoutes)
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
