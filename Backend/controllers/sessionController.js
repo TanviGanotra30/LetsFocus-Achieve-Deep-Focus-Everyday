@@ -1,9 +1,10 @@
 const Session = require("../models/Session")
-console.log("REQ.USER:", req.user)
-console.log("REQ.BODY:", req.body)
+
 exports.createSession = async (req, res) => {
   try {
 
+    console.log("REQ.USER:", req.user)
+console.log("REQ.BODY:", req.body)
     const duration = Number(req.body?.duration) || 0
     const subject = req.body?.subject || "General"
 
