@@ -22,7 +22,7 @@ export default function Analytics() {
 
   const fetchStats = async () => {
     try {
-      const res = await getWeeklyStats(user._id)
+      const res = await getWeeklyStats()
       setData(res.data)
     } catch (error) {
       console.log(error)
@@ -33,11 +33,19 @@ export default function Analytics() {
   const total = data.reduce((sum, d) => sum + d.minutes, 0)
   const avg = data.length ? Math.round(total / data.length) : 0
 
-  const bestDay = data.reduce((max, d) =>
-    d.minutes > max.minutes ? d : max, { minutes: 0 })
+  // const bestDay = data.reduce((max, d) =>
+  //   d.minutes > max.minutes ? d : max, { minutes: 0 })
 
-  const worstDay = data.reduce((min, d) =>
-    d.minutes < min.minutes ? d : min, data[0] || {})
+  // const worstDay = data.reduce((min, d) =>
+  //   d.minutes < min.minutes ? d : min, data[0] || {})
+
+  const bestDay = data.length
+  ? data.reduce((max, d) => d.minutes > max.minutes ? d : max, data[0])
+  : {}
+
+const worstDay = data.length
+  ? data.reduce((min, d) => d.minutes < min.minutes ? d : min, data[0])
+  : {}
 
   // 🎯 Subject-wise fake grouping (can later connect backend)
   const subjectData = [

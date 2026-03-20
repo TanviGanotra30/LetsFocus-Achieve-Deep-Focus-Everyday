@@ -33,10 +33,9 @@ export const getSessions = async () => {
   return API.get(`/session`)
 }
 
-export const getWeeklyStats = async () => {
+export const getWeeklyStats = () => {
   return API.get(`/session/weekly`)
 }
-
 export const getContributionData = async () => {
   return API.get(`/session/contributions`)
 }
