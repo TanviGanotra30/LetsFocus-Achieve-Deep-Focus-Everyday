@@ -18,9 +18,9 @@ export default function Analytics() {
 
   const user = JSON.parse(localStorage.getItem("user"))
 
-  useEffect(() => {
-    fetchStats()
-  }, [])
+  // useEffect(() => {
+  //   fetchStats()
+  // }, [])
 
   // const fetchStats = async () => {
   //   try {
