@@ -15,12 +15,12 @@ const sessionSchema = new mongoose.Schema({
 
   subject: {
     type: String
-  },
-
-  date: {
-    type: Date,
-    default: Date.now
   }
+
+  // date: {
+  //   type: Date,
+  //   default: Date.now
+  // }
 
 },{ timestamps: true }) 
 

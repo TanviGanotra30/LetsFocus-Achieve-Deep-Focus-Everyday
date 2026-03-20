@@ -100,37 +100,39 @@ exports.getUserSessions = async (req, res) => {
 
 exports.getWeeklyStats = async (req, res) => {
   try {
+    const { userId } = req.params
 
-    const today = new Date()
+    const startOfWeek = new Date()
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
+    startOfWeek.setHours(0, 0, 0, 0)
 
-    const firstDayOfWeek = new Date(today)
-    firstDayOfWeek.setDate(today.getDate() - today.getDay())
-
-    const lastDayOfWeek = new Date(firstDayOfWeek)
-    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+    const endOfWeek = new Date(startOfWeek)
+    endOfWeek.setDate(endOfWeek.getDate() + 7)
 
     const sessions = await Session.find({
-      userId: req.user.id,
-      date: {
-        $gte: firstDayOfWeek,
-        $lte: lastDayOfWeek
+      userId,
+      createdAt: {
+        $gte: startOfWeek,
+        $lt: endOfWeek
       }
     })
 
     const weekData = {
-      Sun:0,
-      Mon:0,
-      Tue:0,
-      Wed:0,
-      Thu:0,
-      Fri:0,
-      Sat:0
+      Mon: 0,
+      Tue: 0,
+      Wed: 0,
+      Thu: 0,
+      Fri: 0,
+      Sat: 0,
+      Sun: 0
     }
 
     sessions.forEach(session => {
-      const day = new Date(session.date).toLocaleString("en-US",{ weekday:"short" })
+      const day = new Date(session.createdAt).toLocaleString("en-US", {
+        weekday: "short"
+      })
 
-      if(weekData[day] !== undefined){
+      if (weekData[day] !== undefined) {
         weekData[day] += session.duration
       }
     })
@@ -143,7 +145,7 @@ exports.getWeeklyStats = async (req, res) => {
     res.json(chartData)
 
   } catch (error) {
-    res.status(500).json({ message:"Server error" })
+    res.status(500).json({ message: "Server error" })
   }
 }
 
