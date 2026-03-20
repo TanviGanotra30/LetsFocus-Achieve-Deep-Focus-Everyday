@@ -85,6 +85,7 @@ export default function Timer({ subject }) {
     setTimeLeft(seconds)
     setIsRunning(false)
     setEndTime(null)
+    
 
   }
 

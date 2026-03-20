@@ -1,10 +1,8 @@
 const Session = require("../models/Session")
-
+console.log("REQ.USER:", req.user)
+console.log("REQ.BODY:", req.body)
 exports.createSession = async (req, res) => {
   try {
-
-    console.log("USER:", req.user)
-    console.log("BODY:", req.body)
 
     const duration = Number(req.body?.duration) || 0
     const subject = req.body?.subject || "General"
@@ -23,10 +21,10 @@ exports.createSession = async (req, res) => {
     })
 
   } catch (error) {
-    console.log("ERROR:", error)   
-    res.status(500).json({
-      message: "Server error"
-    })
+   console.log("ERROR:", error)
+res.status(500).json({
+  message: error.message
+})
   }
 }
 exports.getUserSessions = async (req, res) => {

@@ -10,7 +10,8 @@ require("dotenv").config()
 const app = express()
 
 app.use(cors({
-  origin: "*"
+  origin: "https://lets-focus-achieve-deep-focus.vercel.app",
+  credentials: true
 }))
 
 
