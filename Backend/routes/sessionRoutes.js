@@ -1,8 +1,5 @@
 const express = require("express")
 const router = express.Router()
-
-const { createSession,getUserSessions,getWeeklyStats,getContributionData,getStudyStreak} = require("../controllers/sessionController")
-
 const {
   createSession,
   getUserSessions,
