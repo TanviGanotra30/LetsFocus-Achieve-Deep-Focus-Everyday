@@ -13,6 +13,8 @@ export default function Analytics() {
 
   const [data, setData] = useState([])
   const [activeTab, setActiveTab] = useState("trend")
+  const [weeklyData, setWeeklyData] = useState([])
+
 
   const user = JSON.parse(localStorage.getItem("user"))
 
@@ -20,24 +22,33 @@ export default function Analytics() {
     fetchStats()
   }, [])
 
-  const fetchStats = async () => {
+  // const fetchStats = async () => {
+  //   try {
+  //     const res = await getWeeklyStats()
+  //     setData(res.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
+
+
+  useEffect(() => {
+  const fetchWeekly = async () => {
     try {
       const res = await getWeeklyStats()
-      setData(res.data)
-    } catch (error) {
-      console.log(error)
+      console.log("WEEKLY DATA:", res.data) // 🔥 IMPORTANT
+      setWeeklyData(res.data)
+    } catch (err) {
+      console.error("WEEKLY ERROR:", err)
     }
   }
+
+  fetchWeekly()
+}, [])
 
   // 📊 Stats
   const total = data.reduce((sum, d) => sum + d.minutes, 0)
   const avg = data.length ? Math.round(total / data.length) : 0
-
-  // const bestDay = data.reduce((max, d) =>
-  //   d.minutes > max.minutes ? d : max, { minutes: 0 })
-
-  // const worstDay = data.reduce((min, d) =>
-  //   d.minutes < min.minutes ? d : min, data[0] || {})
 
   const bestDay = data.length
   ? data.reduce((max, d) => d.minutes > max.minutes ? d : max, data[0])
