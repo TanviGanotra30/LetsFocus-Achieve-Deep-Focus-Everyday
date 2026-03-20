@@ -57,60 +57,6 @@ MongoDB
 
 JWT Authentication
 
-☁️ Deployment
-
-Frontend: Vercel / Netlify
-
-Backend: Render
-
-📁 Project Structure
-LetsFocus/
-│
-├── frontend/              # React frontend
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   └── App.js
-│
-├── backend/               # Node.js backend
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   └── server.js
-│
-├── .env
-├── package.json
-└── README.md
-⚙️ Installation & Setup
-1️⃣ Clone the repository
-git clone https://github.com/your-username/letsfocus.git
-cd letsfocus
-2️⃣ Setup Backend
-cd backend
-npm install
-
-Create a .env file:
-
-PORT=5000
-MONGO_URI=your_mongodb_connection
-JWT_SECRET=your_secret_key
-
-Run backend:
-
-npm start
-3️⃣ Setup Frontend
-cd frontend
-npm install
-npm run dev
-🌍 API Endpoints
-Auth Routes
-POST /api/auth/signup
-POST /api/auth/login
-Task Routes
-GET /api/tasks
-POST /api/tasks
-PUT /api/tasks/:id
-DELETE /api/tasks/:id
 🚀 Deployment
 
 Backend deployed on Render
