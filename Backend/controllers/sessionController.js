@@ -1,6 +1,8 @@
 const Session = require("../models/Session")
 
 exports.createSession = async (req, res) => {
+  console.log("USER:", req.user)
+console.log("BODY:", req.body)
 
   try {
 
