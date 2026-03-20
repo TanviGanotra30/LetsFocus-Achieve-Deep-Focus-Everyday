@@ -282,22 +282,32 @@ exports.getWeeklyStats = async (req, res) => {
   try {
     const userId = req.user.id
 
-    const today = new Date()
+    const today = new Date(new Date().toLocaleString("en-US", {
+  timeZone: "Asia/Kolkata"
+}))
 
     // 🟢 START OF WEEK (MONDAY)
     const day = today.getDay()
     const diff = today.getDate() - day + (day === 0 ? -6 : 1)
 
-    const startOfWeek = new Date(today)
-    startOfWeek.setDate(diff)
-    startOfWeek.setHours(0, 0, 0, 0)
+    // const startOfWeek = new Date(today)
+    // startOfWeek.setDate(diff)
+    // startOfWeek.setHours(0, 0, 0, 0)
 
-    const endOfWeek = new Date(startOfWeek)
-    endOfWeek.setDate(endOfWeek.getDate() + 7)
+    // const endOfWeek = new Date(startOfWeek)
+    // endOfWeek.setDate(endOfWeek.getDate() + 7)
+
+    const firstDayOfWeek = new Date(today)
+firstDayOfWeek.setHours(0, 0, 0, 0)
+firstDayOfWeek.setDate(today.getDate() - today.getDay())
+
+const lastDayOfWeek = new Date(firstDayOfWeek)
+lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
+lastDayOfWeek.setHours(23, 59, 59, 999)
 
     const sessions = await Session.find({
-      userId,
-      createdAt: {
+      userId: req.user.id,
+      date: {
         $gte: startOfWeek,
         $lt: endOfWeek
       }
@@ -313,10 +323,14 @@ exports.getWeeklyStats = async (req, res) => {
       Sun: 0
     }
 
-    sessions.forEach(session => {
-      const dayName = new Date(session.createdAt).toLocaleString("en-US", {
-        weekday: "short"
-      })
+     sessions.forEach(session => {
+    //   const dayName = new Date(session.createdAt).toLocaleString("en-US", {
+    //     weekday: "short"
+    //   })
+    const day = new Date(session.date).toLocaleString("en-US", {
+  weekday: "short",
+  timeZone: "Asia/Kolkata"
+})
 
       if (weekData[dayName] !== undefined) {
         weekData[dayName] += Number(session.duration) || 0
