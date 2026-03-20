@@ -1,5 +1,6 @@
 const express = require("express")
 const router = express.Router()
+
 const {
   createSession,
   getUserSessions,
@@ -8,7 +9,7 @@ const {
   getStudyStreak
 } = require("../controllers/sessionController")
 
-const { protect } = require("../middleware/authMiddleware") // 🔥 ADD THIS
+const { protect } = require("../middleware/authMiddleware")
 
 router.post("/create", protect, createSession)
 router.get("/", protect, getUserSessions)
@@ -17,5 +18,3 @@ router.get("/contributions", protect, getContributionData)
 router.get("/streak", protect, getStudyStreak)
 
 module.exports = router
-module.exports = router
-
