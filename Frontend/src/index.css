@@ -1,5 +1,104 @@
 @import "tailwindcss";
 
+/* Enhanced Cursor Animations */
+@keyframes cursorPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes cursorGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2px rgba(99, 102, 241, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.8));
+  }
+}
+
+@keyframes trailFade {
+  to {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Cursor Trail Elements */
+.cursor-trail {
+  --tx: 0;
+  --ty: 0;
+  position: fixed;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.6) 0%, rgba(99, 102, 241, 0.2) 100%);
+  border-radius: 50%;
+  animation: trailFade 1s ease-out forwards;
+  box-shadow: 0 0 4px rgba(99, 102, 241, 0.4);
+  z-index: 9999;
+}
+
+.cursor-ripple {
+  position: fixed;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(99, 102, 241, 0.8);
+  border-radius: 50%;
+  animation: ripple 0.6s ease-out forwards;
+  z-index: 9999;
+}
+
+/* Beautiful Custom Cursor */
+:root {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><filter id="glow"><feGaussianBlur stdDeviation="1.5" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="6" cy="6" r="4" fill="%236366f1" opacity="0.9" filter="url(%23glow)"/><path d="M 8 6 L 20 18" stroke="%236366f1" stroke-width="2" fill="none" stroke-linecap="round" filter="url(%23glow)"/><circle cx="20" cy="18" r="2" fill="%236366f1" filter="url(%23glow)"/></svg>') 4 4, auto;
+  --cursor-x: 0;
+  --cursor-y: 0;
+}
+
+/* Hover state for buttons and interactive elements */
+button, 
+a, 
+[role="button"],
+input[type="button"],
+input[type="submit"],
+.cursor-pointer {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><filter id="glowHover"><feGaussianBlur stdDeviation="2" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><circle cx="6" cy="6" r="5" fill="%236366f1" opacity="1" filter="url(%23glowHover)"/><path d="M 8 6 L 20 18" stroke="%236366f1" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(%23glowHover)"/><circle cx="20" cy="18" r="2.5" fill="%236366f1" filter="url(%23glowHover)"/></svg>') 4 4, pointer;
+  transition: all 0.2s ease;
+}
+
+button:active,
+a:active,
+[role="button"]:active {
+  animation: cursorPulse 0.6s ease-out;
+}
+
+/* Text selection cursor */
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+[contenteditable="true"] {
+  cursor: text;
+}
+
 .color-empty {
   fill: #ebedf0;
 }

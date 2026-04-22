@@ -8,12 +8,15 @@ import Analytics from "./pages/Analytics"
 import Landing from "./pages/Landing"
 import Settings from "./pages/Settings"
 import ProtectedRoute from "./utils/ProtectedRoute"
+import CursorEffect from "./components/CursorEffect"
+import "./index.css"
 
 
 function App() {
 
   return (
     <BrowserRouter>
+      <CursorEffect />
 
       <Routes>
         <Route path="/" element={<Landing />} />

@@ -775,7 +775,6 @@ export default function Landing() {
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
-            <Link to="/dashboard">Dashboard</Link>
           </div>
 
           <div className="flex gap-3 items-center">
