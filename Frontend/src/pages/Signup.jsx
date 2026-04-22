@@ -120,61 +120,32 @@ import { useState } from "react"
 import axios from "axios"
 import { motion } from "framer-motion"
 
-// export default function Signup() {
-//   const navigate = useNavigate()
-//   const API = import.meta.env.VITE_API_URL
-
-//   const [name, setName] = useState("")
-//   const [email, setEmail] = useState("")
-//   const [password, setPassword] = useState("")
-//   const [loading, setLoading] = useState(false)
-
-//   const handleSignup = async (e) => {
-//     e.preventDefault()
-//     setLoading(true)
-
-//     try {
-//       await axios.post(`${API}/api/auth/signup`, {
-//         name,
-//         email,
-//         password,
-//       })
-
-//       navigate("/login")
-//     } catch (err) {
-//       alert("Signup failed")
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-
 export default function Signup() {
-
   const navigate = useNavigate()
-  const API = import.meta.env.VITE_API_URL;
-  const [name,setName] = useState("")
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
+  const API = import.meta.env.VITE_API_URL
+
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleSignup = async (e) => {
-
     e.preventDefault()
+    setLoading(true)
 
     try {
-
-      await axios.post(
-        `${API}/api/auth/signup`,
-        { name,email,password }
-      )
+      await axios.post(`${API}/api/auth/signup`, {
+        name,
+        email,
+        password,
+      })
 
       navigate("/login")
-
     } catch (err) {
-
       alert("Signup failed")
-
+    } finally {
+      setLoading(false)
     }
-
   }
 
   return (
