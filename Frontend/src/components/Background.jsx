@@ -97,7 +97,7 @@ export default function Background() {
         animate={{
           x: [0, 40, 0],
           y: [0, -60, 0],
-          scale: [1, 1.1, 1],
+          scale: [1, 1.1, 0],
         }}
         transition={{
           duration: 20,
