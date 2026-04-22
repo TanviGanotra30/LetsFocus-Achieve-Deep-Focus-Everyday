@@ -691,9 +691,6 @@ import {
   Sparkles,
   ArrowRight,
   Play,
-  //GitHub,
-  //Twitter,
-  //Linkedin,
 } from "lucide-react"
 import Background from "../components/Background"
 
