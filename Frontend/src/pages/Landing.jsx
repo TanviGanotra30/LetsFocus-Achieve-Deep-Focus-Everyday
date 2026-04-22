@@ -116,7 +116,7 @@ export default function Landing() {
       {/* HERO */}
       <section
         id="home"
-        className="min-h-screen flex items-center justify-center px-6 pt-1 relative"
+        className="min-h-screen flex items-center justify-center px-6 pt-1 relative pb-19"
       >
         <div className="max-w-5xl text-center relative z-10">
           <motion.div
