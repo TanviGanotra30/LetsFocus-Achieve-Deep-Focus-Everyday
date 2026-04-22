@@ -985,7 +985,7 @@ export default function Landing() {
             </div>
 
             <p className="text-gray-400 mt-5 leading-relaxed">
-              The most beautiful productivity platform built for deep work.
+              The most beautiful productivity platform built for deep work and focus.
             </p>
 
             <div className="flex gap-3 mt-6">
