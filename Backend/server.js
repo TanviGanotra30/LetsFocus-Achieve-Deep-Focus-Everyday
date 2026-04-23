@@ -4,6 +4,7 @@ const mongoose = require("mongoose")
 const cors = require("cors")
 const sessionRoutes = require("./routes/sessionRoutes")
 const aiRoutes = require("./routes/aiRoutes")
+const taskRoutes = require("./routes/taskRoutes")
 
 require("dotenv").config()
 
@@ -21,6 +22,7 @@ app.use(express.json())
 app.use("/api/auth", authRoutes)
 app.use("/api/session", sessionRoutes)
 app.use("/api/ai", aiRoutes)
+app.use("/api/tasks", taskRoutes)
 
 
 mongoose.connect(process.env.MONGO_URI)
@@ -28,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.log(err))
 
 app.get("/", (req, res) => {
-  res.send("StudyFlow API running")
+  res.send("LetsFocus API running")
 })
 
 const PORT = process.env.PORT || 5000

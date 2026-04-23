@@ -9,6 +9,7 @@ import Landing from "./pages/Landing"
 import Settings from "./pages/Settings"
 import ProtectedRoute from "./utils/ProtectedRoute"
 import CursorEffect from "./components/CursorEffect"
+import Tasks from "./pages/Tasks"
 import "./index.css"
 
 
@@ -40,7 +41,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+        <Route path="/tasks" element={<Tasks />} />
         <Route
           path="/analytics"
           element={
