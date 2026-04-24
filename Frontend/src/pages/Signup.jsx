@@ -65,28 +65,6 @@ export default function Signup() {
             Join thousands of productive minds building habits, crushing goals,
             and mastering consistency every day.
           </motion.p>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mt-10">
-            {[
-              { value: "180K+", label: "Users" },
-              { value: "2.4x", label: "Focus Gain" },
-              { value: "4.9★", label: "Rating" },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 + i * 0.1 }}
-                className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-2xl p-4 text-center"
-              >
-                <p className="text-2xl font-bold text-indigo-400">
-                  {item.value}
-                </p>
-                <p className="text-xs text-gray-400 mt-1">{item.label}</p>
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         <p className="relative z-10 text-xs text-gray-500">

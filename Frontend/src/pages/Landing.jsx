@@ -94,7 +94,6 @@ export default function Landing() {
           <div className="hidden md:flex gap-8 text-sm text-gray-300">
             <a href="#home">Home</a>
             <a href="#features">Features</a>
-            <a href="#pricing">Pricing</a>
             <a href="#about">About</a>
           </div>
 
@@ -275,7 +274,7 @@ export default function Landing() {
           </h2>
 
           <p className="text-gray-400 mt-6 text-lg">
-            Join 180,000+ people who reclaimed their attention.
+            Join people who reclaimed their attention.
           </p>
 
           <Link

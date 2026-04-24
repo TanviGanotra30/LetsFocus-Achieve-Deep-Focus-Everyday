@@ -9,6 +9,7 @@ import {
   Bell,
 } from "lucide-react";
 import Background from "../components/Background";
+import Sidebar from "../components/Sidebar";
 
 export default function Timer() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -152,26 +153,7 @@ export default function Timer() {
     <div className="min-h-screen flex text-white relative overflow-hidden">
       <Background />
 
-      <aside className="w-60 hidden lg:block border-r border-white/10 bg-black/20 p-5 z-10">
-        <h1 className="text-xl font-bold mb-10">
-          LetsFocus
-        </h1>
-
-        <nav className="space-y-3">
-          {[
-            ["Dashboard", "/dashboard"],
-            ["Tasks", "/tasks"],
-            ["Analytics", "/analytics"],
-            ["Timer", "/timer"],
-          ].map(([name, path]) => (
-            <Link key={name} to={path}>
-              <div className="px-4 py-3 rounded-2xl hover:bg-white/5">
-                {name}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar/>
 
       <main className="flex-1 p-6 z-10">
         <div className="text-center mt-10">
@@ -233,21 +215,21 @@ export default function Timer() {
         <div className="flex justify-center gap-5 mt-8">
           <button
             onClick={startTimer}
-            className="w-16 h-16 rounded-2xl bg-cyan-500"
+            className="w-16 h-16 p-4 rounded-2xl bg-cyan-500"
           >
             <Play />
           </button>
 
           <button
             onClick={pauseTimer}
-            className="w-16 h-16 rounded-2xl bg-white/10"
+            className="w-16 h-16 p-4 rounded-2xl bg-white/10"
           >
             <Pause />
           </button>
 
           <button
             onClick={resetTimer}
-            className="w-16 h-16 rounded-2xl bg-white/10"
+            className="w-16 h-16 p-4 rounded-2xl bg-white/10"
           >
             <RotateCcw />
           </button>

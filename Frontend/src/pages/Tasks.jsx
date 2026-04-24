@@ -16,6 +16,8 @@ import { motion } from "framer-motion"
 import { Link } from "react-router-dom"
 import axios from "axios"
 import Background from "../components/Background"
+import Sidebar from "../components/Sidebar"
+import Topbar from "../components/Topbar"
 
 export default function Tasks() {
   const API = import.meta.env.VITE_API_URL
@@ -217,70 +219,12 @@ export default function Tasks() {
       <Background />
 
       {/* SIDEBAR */}
-      <aside className="w-64 border-r border-white/10 bg-black/20 backdrop-blur-xl p-5 hidden lg:block relative z-10">
-        <h1 className="text-xl font-bold mb-10">
-          LetsFocus
-        </h1>
-
-        <nav className="space-y-3">
-          {[
-            [
-              "Dashboard",
-              "/dashboard",
-              LayoutDashboard,
-            ],
-            ["Tasks", "/tasks", CheckSquare],
-            [
-              "Analytics",
-              "/analytics",
-              BarChart3,
-            ],
-            ["Timer", "/timer", Timer],
-            ["Goals", "/goals", Target],
-            ["Profile", "/profile", User],
-            [
-              "Settings",
-              "/settings",
-              Settings,
-            ],
-          ].map(([name, path, Icon]) => (
-            <Link key={name} to={path}>
-              <div
-                className={`flex items-center gap-3 px-4 py-3 rounded-2xl cursor-pointer transition ${
-                  path === "/tasks"
-                    ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:bg-white/5"
-                }`}
-              >
-                <Icon size={18} />
-                {name}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar/>
 
       {/* MAIN */}
       <main className="flex-1 p-6 lg:p-8 relative z-10">
         {/* TOPBAR */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 text-gray-400 w-[60%]">
-            <Search size={18} />
-
-            <input
-              placeholder="Search tasks..."
-              className="bg-transparent outline-none w-full"
-            />
-          </div>
-
-          <div className="flex items-center gap-5">
-            <Bell size={18} />
-
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center font-bold">
-              {user?.name?.[0] || "A"}
-            </div>
-          </div>
-        </div>
+        <Topbar/>
 
         {/* HEADER */}
         <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">

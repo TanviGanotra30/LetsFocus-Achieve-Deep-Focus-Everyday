@@ -16,6 +16,8 @@ import {
 } from "recharts";
 
 import Background from "../components/Background";
+import Sidebar from "../components/Sidebar";
+import Topbar from "../components/Topbar";
 
 import {
   getWeeklyStats,
@@ -71,10 +73,6 @@ function heatColor(count) {
   return "#ec4899";
 }
 
-// ─── Chart wrapper — gives Recharts a guaranteed pixel height ────────────────
-// This is the ONLY reliable fix for "width(-1) height(-1)" errors.
-// Recharts uses ResizeObserver on the immediate parent; it must have
-// a concrete pixel height, not a percentage or min-height.
 function ChartBox({ height = 280, children }) {
   return (
     <div style={{ position: "relative", width: "100%", height }}>
@@ -143,53 +141,16 @@ export default function Analytics() {
   }
 
   return (
-    /*
-      ✅ KEY FIX: Use h-screen (concrete pixel height) NOT min-h-screen.
-      min-h-screen makes the div's height "auto" in flexbox context,
-      which means children can't measure their height → Recharts gets -1.
-      h-screen = 100vh = a real pixel value ResizeObserver can read.
-      overflow-y-auto moves scroll to the flex container level.
-    */
-    <div className="h-screen flex overflow-hidden text-white relative">
+    <div className="min-h-screen flex text-white relative">
       <Background />
 
-      {/* ── Sidebar ── */}
-      <aside className="w-60 hidden lg:flex lg:flex-col z-10 border-r border-white/10 bg-black/20 backdrop-blur-xl p-5 flex-shrink-0">
-        <h1 className="text-xl font-bold mb-10">Focus &amp; Achieve</h1>
-        <nav className="space-y-3">
-          {[
-            ["Dashboard", "/dashboard"],
-            ["Tasks",     "/tasks"],
-            ["Analytics", "/analytics"],
-            ["Timer",     "/timer"],
-          ].map(([name, path], i) => (
-            <Link key={i} to={path}>
-              <div className={`px-4 py-3 rounded-2xl ${
-                path === "/analytics" ? "bg-white/10" : "text-gray-400 hover:bg-white/5"
-              }`}>
-                {name}
-              </div>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar/>
 
       {/* ── Main — scroll happens here ── */}
-      <main className="flex-1 overflow-y-auto z-10 p-6">
+      <main className="flex-1 z-10 p-6">
 
         {/* Topbar */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 flex justify-between items-center">
-          <div className="flex gap-3 items-center text-gray-400">
-            <Search size={18} />
-            <input placeholder="Search..." className="bg-transparent outline-none" />
-          </div>
-          <div className="flex gap-5 items-center">
-            <Bell size={18} />
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center font-bold">
-              {user?.name?.charAt(0) ?? "U"}
-            </div>
-          </div>
-        </div>
+        <Topbar/>
 
         {/* Heading */}
         <div className="mt-8 flex items-center justify-between">
@@ -286,49 +247,6 @@ export default function Analytics() {
           </div>
         </div>
 
-        {/* ── Contribution Heatmap ── */}
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 mt-8">
-          <h2 className="font-bold mb-1">Contribution Graph</h2>
-          <p className="text-xs text-gray-500 mb-5">Last 18 weeks of study activity</p>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(18, 14px)",
-            gridTemplateRows: "repeat(7, 14px)",
-            gridAutoFlow: "column",
-            gap: 5,
-            overflowX: "auto",
-          }}>
-            {heatmapCells.map((cell, i) => (
-              <div
-                key={i}
-                title={`${cell.date}: ${cell.count} min`}
-                style={{
-                  width: 14, height: 14, borderRadius: 3,
-                  backgroundColor: heatColor(cell.count),
-                  transition: "opacity 0.15s",
-                  cursor: "default",
-                }}
-                onMouseEnter={e => (e.currentTarget.style.opacity = "0.5")}
-                onMouseLeave={e => (e.currentTarget.style.opacity = "1")}
-              />
-            ))}
-          </div>
-          <div className="flex items-center gap-2 mt-5 text-xs text-gray-500">
-            <span>Less</span>
-            {[
-              ["#1e293b", "0 min"],
-              ["#06b6d4", "< 30 min"],
-              ["#8b5cf6", "< 60 min"],
-              ["#ec4899", "60+ min"],
-            ].map(([color, label]) => (
-              <div key={color} className="flex items-center gap-1">
-                <div style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: color }} />
-                <span className="text-gray-600">{label}</span>
-              </div>
-            ))}
-            <span>More</span>
-          </div>
-        </div>
 
         {/* ── Productivity Bar Chart ── */}
         <div className="rounded-3xl border border-white/10 bg-white/5 p-6 mt-8 mb-8">
