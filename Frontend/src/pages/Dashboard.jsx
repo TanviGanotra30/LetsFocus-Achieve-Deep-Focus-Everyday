@@ -334,7 +334,7 @@ export default function Dashboard() {
             {getGreeting()}, {user?.name || "User"}
           </h2>
           <p className="text-gray-400 mt-2 text-lg">
-            You're 70% to your daily focus goal. Let's finish strong.
+            You're almost there to complete your daily focus goal. Let's finish strong.
           </p>
         </div>
 
