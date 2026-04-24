@@ -1,6 +1,4 @@
 const Session = require("../models/Session")
-
-// ================= CREATE SESSION =================
 exports.createSession = async (req, res) => {
   try {
     const duration = Number(req.body?.duration) || 0
@@ -10,14 +8,11 @@ exports.createSession = async (req, res) => {
       userId: req.user.id,
       duration,
       subject,
-      date: new Date() // ✅ consistent field
     })
 
     await session.save()
 
-    res.status(201).json({
-      message: "Session saved successfully"
-    })
+    res.status(201).json({ message: "Session saved successfully" })
 
   } catch (error) {
     console.log("CREATE ERROR:", error)
@@ -25,12 +20,10 @@ exports.createSession = async (req, res) => {
   }
 }
 
-
-// ================= GET USER SESSIONS =================
 exports.getUserSessions = async (req, res) => {
   try {
     const sessions = await Session.find({ userId: req.user.id })
-      .sort({ date: -1 }) // ✅ use date
+      .sort({ createdAt: -1 }) 
 
     res.json(sessions)
 
@@ -40,127 +33,43 @@ exports.getUserSessions = async (req, res) => {
   }
 }
 
-
-// ================= WEEKLY STATS =================
-// exports.getWeeklyStats = async (req, res) => {
-//   try {
-
-//     const userId = req.user?.id
-//     if (!userId) {
-//       return res.status(401).json({ message: "Unauthorized" })
-//     }
-
-//     const today = new Date()
-
-//     const firstDayOfWeek = new Date(today)
-//     firstDayOfWeek.setHours(0, 0, 0, 0)
-//     firstDayOfWeek.setDate(today.getDate() - today.getDay())
-
-//     const lastDayOfWeek = new Date(firstDayOfWeek)
-//     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
-//     lastDayOfWeek.setHours(23, 59, 59, 999)
-
-//     const sessions = await Session.find({
-//       userId,
-//       date: {
-//         $gte: firstDayOfWeek,
-//         $lte: lastDayOfWeek
-//       }
-//     })
-
-//     const weekData = {
-//       Sun: 0,
-//       Mon: 0,
-//       Tue: 0,
-//       Wed: 0,
-//       Thu: 0,
-//       Fri: 0,
-//       Sat: 0
-//     }
-
-//     sessions.forEach(session => {
-//       if (!session.date) return
-
-//       const d = new Date(session.date)
-//       if (isNaN(d)) return
-
-//       const day = d.toLocaleString("en-US", { weekday: "short" })
-
-//       if (weekData[day] !== undefined) {
-//         weekData[day] += Number(session.duration) || 0
-//       }
-//     })
-
-//     const chartData = Object.keys(weekData).map(day => ({
-//       day,
-//       minutes: weekData[day]
-//     }))
-
-//     res.json(chartData)
-
-//   } catch (error) {
-//     console.error("WEEKLY ERROR:", error)
-//     res.status(500).json({ message: error.message })
-//   }
-// }
-
-
-
-
-
 exports.getWeeklyStats = async (req, res) => {
   try {
-
     const userId = req.user?.id
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" })
-    }
+    if (!userId) return res.status(401).json({ message: "Unauthorized" })
 
     const today = new Date()
 
-    // ✅ start of week (Sunday)
     const firstDayOfWeek = new Date(today)
     firstDayOfWeek.setDate(today.getDate() - today.getDay())
     firstDayOfWeek.setHours(0, 0, 0, 0)
 
-    // ✅ end of week
     const lastDayOfWeek = new Date(firstDayOfWeek)
     lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6)
     lastDayOfWeek.setHours(23, 59, 59, 999)
 
-    console.log("WEEK RANGE:", firstDayOfWeek, lastDayOfWeek)
-
     const sessions = await Session.find({
       userId,
-      date: {
+      createdAt: {
         $gte: firstDayOfWeek,
-        $lte: lastDayOfWeek
-      }
+        $lte: lastDayOfWeek,
+      },
     })
 
-    console.log("SESSIONS FOUND:", sessions)
-
-    const weekData = {
-      Sun: 0,
-      Mon: 0,
-      Tue: 0,
-      Wed: 0,
-      Thu: 0,
-      Fri: 0,
-      Sat: 0
-    }
+    const weekData = { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 }
 
     sessions.forEach(session => {
-      const d = new Date(session.date)
-
+      const d = new Date(session.createdAt)
+      if (isNaN(d)) return
       const day = d.toLocaleString("en-US", { weekday: "short" })
-
-      weekData[day] += Number(session.duration) || 0
+      if (weekData[day] !== undefined) {
+        weekData[day] += Number(session.duration) || 0
+      }
     })
 
     const chartData = Object.keys(weekData).map(day => ({
       day,
-      minutes: weekData[day]
+      minutes: weekData[day],
     }))
 
     res.json(chartData)
@@ -171,36 +80,26 @@ exports.getWeeklyStats = async (req, res) => {
   }
 }
 
-
-// ================= CONTRIBUTION DATA =================
 exports.getContributionData = async (req, res) => {
   try {
-
     const userId = req.user?.id
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" })
-    }
+    if (!userId) return res.status(401).json({ message: "Unauthorized" })
 
     const sessions = await Session.find({ userId })
 
     const contributions = {}
 
     sessions.forEach(session => {
-      if (!session.date) return
-
-      const d = new Date(session.date)
+      const d = new Date(session.createdAt)
       if (isNaN(d)) return
 
-      const date = d.toISOString().split("T")[0]
-
-      contributions[date] =
-        (contributions[date] || 0) + Number(session.duration)
+      const date = d.toISOString().split("T")[0] // "YYYY-MM-DD"
+      contributions[date] = (contributions[date] || 0) + Number(session.duration)
     })
 
-    const result = Object.keys(contributions).map(date => ({
-      date,
-      count: contributions[date]
-    }))
+    const result = Object.keys(contributions)
+      .sort() // chronological order
+      .map(date => ({ date, count: contributions[date] }))
 
     res.json(result)
 
@@ -211,39 +110,33 @@ exports.getContributionData = async (req, res) => {
 }
 
 
-// ================= STUDY STREAK =================
 exports.getStudyStreak = async (req, res) => {
   try {
-
     const userId = req.user?.id
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" })
-    }
+    if (!userId) return res.status(401).json({ message: "Unauthorized" })
 
     const sessions = await Session.find({ userId })
 
     const dates = sessions
       .map(s => {
-        if (!s.date) return null
-        const d = new Date(s.date)
+        const d = new Date(s.createdAt)
         if (isNaN(d)) return null
         return d.toISOString().split("T")[0]
       })
       .filter(Boolean)
 
-    const uniqueDates = [...new Set(dates)].sort()
+    const uniqueDates = [...new Set(dates)].sort() // ascending
 
     let streak = 0
-    const today = new Date()
+    const todayStr = new Date().toISOString().split("T")[0]
 
+    // Walk backwards from today
     for (let i = uniqueDates.length - 1; i >= 0; i--) {
-      const sessionDate = new Date(uniqueDates[i])
+      const expected = new Date()
+      expected.setDate(expected.getDate() - streak)
+      const expectedStr = expected.toISOString().split("T")[0]
 
-      const diff = Math.floor(
-        (today - sessionDate) / (1000 * 60 * 60 * 24)
-      )
-
-      if (diff === streak) {
+      if (uniqueDates[i] === expectedStr) {
         streak++
       } else {
         break

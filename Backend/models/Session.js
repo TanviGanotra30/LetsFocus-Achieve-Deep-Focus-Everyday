@@ -14,7 +14,8 @@ const sessionSchema = new mongoose.Schema({
   },
 
   subject: {
-    type: String
+    type: String,
+    default: "General"
   },
 
   // date: {

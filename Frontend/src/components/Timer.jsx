@@ -1,206 +1,295 @@
-import { useState, useEffect } from "react"
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
-import "react-circular-progressbar/dist/styles.css"
-import { saveSession } from "../services/api"
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Search,
+  Bell,
+} from "lucide-react";
+import Background from "../components/Background";
 
-export default function Timer({ subject }) {
+export default function Timer() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
-  const [totalSeconds, setTotalSeconds] = useState(1500)
-  const [timeLeft, setTimeLeft] = useState(1500)
-  const [isRunning, setIsRunning] = useState(false)
-  const [inputMinutes, setInputMinutes] = useState(25)
-  const [endTime, setEndTime] = useState(null)
+  const API = import.meta.env.VITE_API_URL + "/api/session";
+
+  const [subject, setSubject] = useState("");
+  const [customTime, setCustomTime] = useState(25);
+
+  const [remaining, setRemaining] = useState(25 * 60);
+  const [running, setRunning] = useState(false);
+
+  const [sessions, setSessions] = useState([]);
+
+  const timerRef = useRef(null);
 
   useEffect(() => {
+    restoreTimer();
+    fetchSessions();
+  }, []);
 
-    let timer
-    const finishSession = async () => {
-
-  const sessionData = {
-    duration: totalSeconds / 60,
-    subject: subject || "Focus Session"
-  }
-
-  try {
-    await saveSession(sessionData)
-    console.log("Session saved")
-  } catch (error) {
-    console.log(error)
-  }
-
-}
-
-    if (isRunning && endTime) {
-
-      timer = setInterval(() => {
-
-        const remaining = Math.round((endTime - Date.now()) / 1000)
-
-        if (remaining <= 0) {
-
-          clearInterval(timer)
-          setTimeLeft(0)
-          setIsRunning(false)
-
-          finishSession()
-
-          alert("Focus session completed!")
-
-        } else {
-          setTimeLeft(remaining)
-        }
-
-      }, 1000)
-
+  useEffect(() => {
+    if (running) {
+      timerRef.current = setInterval(updateTimer, 1000);
     }
 
-    return () => clearInterval(timer)
+    return () => clearInterval(timerRef.current);
+  }, [running]);
 
-  }, [isRunning, endTime, totalSeconds, subject])
+  const restoreTimer = () => {
+    const saved = localStorage.getItem("focusTimer");
 
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    if (data.endTime) {
+      setRunning(true);
+      updateTimer();
+    }
+  };
+
+  const updateTimer = () => {
+    const data = JSON.parse(
+      localStorage.getItem("focusTimer")
+    );
+
+    if (!data) return;
+
+    const diff = Math.floor(
+      (data.endTime - Date.now()) / 1000
+    );
+
+    if (diff <= 0) {
+      clearInterval(timerRef.current);
+      setRunning(false);
+      setRemaining(0);
+      completeSession(data.duration);
+      localStorage.removeItem("focusTimer");
+      return;
+    }
+
+    setRemaining(diff);
+  };
 
   const startTimer = () => {
+    const endTime =
+      Date.now() + customTime * 60 * 1000;
 
-    const end = Date.now() + timeLeft * 1000
-    setEndTime(end)
-    setIsRunning(true)
+    localStorage.setItem(
+      "focusTimer",
+      JSON.stringify({
+        endTime,
+        duration: customTime,
+      })
+    );
 
-  }
+    setRemaining(customTime * 60);
+    setRunning(true);
+  };
 
   const pauseTimer = () => {
-    setIsRunning(false)
-  }
+    clearInterval(timerRef.current);
+    setRunning(false);
+    localStorage.removeItem("focusTimer");
+  };
 
   const resetTimer = () => {
-    setIsRunning(false)
-    setTimeLeft(totalSeconds)
-    setEndTime(null)
-  }
+    clearInterval(timerRef.current);
+    setRunning(false);
+    setRemaining(customTime * 60);
+    localStorage.removeItem("focusTimer");
+  };
 
-  const setCustomTime = () => {
+  const completeSession = async (mins) => {
+    try {
+      await axios.post(
+        `${API}/create`,
+        {
+          subject:
+            subject || "Focus Session",
+          duration: mins,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const seconds = inputMinutes * 60
+      fetchSessions();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    setTotalSeconds(seconds)
-    setTimeLeft(seconds)
-    setIsRunning(false)
-    setEndTime(null)
-    
+  const fetchSessions = async () => {
+    try {
+      const res = await axios.get(API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  }
+      setSessions(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  const percentage = ((totalSeconds - timeLeft) / totalSeconds) * 100
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
 
-  const minutes = Math.floor(timeLeft / 60)
-  const seconds = timeLeft % 60
+  const totalMinutes = sessions.reduce(
+    (sum, item) => sum + item.duration,
+    0
+  );
 
   return (
+    <div className="min-h-screen flex text-white relative overflow-hidden">
+      <Background />
 
-  <div className="flex flex-col items-center justify-center p-10 bg-white/70 backdrop-blur rounded-3xl shadow-lg">
+      <aside className="w-60 hidden lg:block border-r border-white/10 bg-black/20 p-5 z-10">
+        <h1 className="text-xl font-bold mb-10">
+          LetsFocus
+        </h1>
 
-    {/* Title */}
-    {/* <h2 className="text-xl font-semibold text-gray-700 mb-1">
-      Set Your Focus Session
-    </h2>
-    <p className="text-sm text-gray-400 mb-8">
-      Focus duration (minutes)
-    </p> */}
+        <nav className="space-y-3">
+          {[
+            ["Dashboard", "/dashboard"],
+            ["Tasks", "/tasks"],
+            ["Analytics", "/analytics"],
+            ["Timer", "/timer"],
+          ].map(([name, path]) => (
+            <Link key={name} to={path}>
+              <div className="px-4 py-3 rounded-2xl hover:bg-white/5">
+                {name}
+              </div>
+            </Link>
+          ))}
+        </nav>
+      </aside>
 
+      <main className="flex-1 p-6 z-10">
+        <div className="text-center mt-10">
+          <h1 className="text-5xl font-black">
+            Focus Timer
+          </h1>
+          <p className="text-gray-400 mt-2">
+            Persistent Deep Work Engine
+          </p>
+        </div>
 
-    {/* CIRCLE */}
-    <div className="relative w-64 h-64 flex items-center justify-center mb-8">
+        {/* Subject */}
+        <div className="max-w-xl mx-auto mt-8">
+          <input
+            value={subject}
+            onChange={(e) =>
+              setSubject(e.target.value)
+            }
+            placeholder="What are you studying?"
+            className="w-full px-5 py-4 rounded-2xl bg-white/5 border border-white/10"
+          />
+        </div>
 
-      {/* Glow */}
-      <div className="absolute w-72 h-72 rounded-full bg-indigo-200 blur-2xl opacity-40"></div>
+        {/* Custom Time */}
+        <div className="flex justify-center gap-4 mt-5">
+          <input
+            type="number"
+            min="1"
+            value={customTime}
+            onChange={(e) =>
+              setCustomTime(
+                Number(e.target.value)
+              )
+            }
+            className="w-32 px-4 py-3 rounded-xl bg-white/5 border border-white/10"
+          />
 
-      {/* Progress */}
-      <div className="w-56 h-56">
-        <CircularProgressbar
-          value={percentage}
-          text={`${minutes}:${seconds.toString().padStart(2,"0")}`}
-          styles={buildStyles({
-            pathColor: "#6366F1",   // indigo
-            textColor: "#111827",
-            trailColor: "#E5E7EB",
-            strokeLinecap: "round"
-          })}
-        />
-      </div>
+          <button
+            onClick={() =>
+              setRemaining(customTime * 60)
+            }
+            className="px-5 rounded-xl bg-cyan-500"
+          >
+            Set Minutes
+          </button>
+        </div>
 
+        {/* Timer Circle */}
+        <div className="flex justify-center mt-10">
+          <div className="w-[340px] h-[340px] rounded-full border-[12px] border-white/10 flex items-center justify-center bg-white/5">
+            <h1 className="text-7xl font-black">
+              {String(mins).padStart(2, "0")}:
+              {String(secs).padStart(2, "0")}
+            </h1>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex justify-center gap-5 mt-8">
+          <button
+            onClick={startTimer}
+            className="w-16 h-16 rounded-2xl bg-cyan-500"
+          >
+            <Play />
+          </button>
+
+          <button
+            onClick={pauseTimer}
+            className="w-16 h-16 rounded-2xl bg-white/10"
+          >
+            <Pause />
+          </button>
+
+          <button
+            onClick={resetTimer}
+            className="w-16 h-16 rounded-2xl bg-white/10"
+          >
+            <RotateCcw />
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid md:grid-cols-2 gap-6 mt-12">
+          <div className="rounded-3xl bg-white/5 p-6">
+            <p className="text-gray-400">
+              Total Focus
+            </p>
+            <h2 className="text-5xl font-black mt-3">
+              {Math.floor(totalMinutes / 60)}h{" "}
+              {totalMinutes % 60}m
+            </h2>
+          </div>
+
+          <div className="rounded-3xl bg-white/5 p-6 max-h-[280px] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4">
+              Recent Sessions
+            </h3>
+
+            {sessions.map((item) => (
+              <div
+                key={item._id}
+                className="py-3 border-b border-white/10 flex justify-between"
+              >
+                <div>
+                  <p>{item.subject}</p>
+                  <p className="text-sm text-gray-400">
+                    {new Date(
+                      item.createdAt
+                    ).toDateString()}
+                  </p>
+                </div>
+
+                <p>{item.duration}m</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
     </div>
-
-
-    {/* PRESET BUTTONS */}
-    {/* TIME CONTROLS */}
-<div className="flex items-center gap-6 mb-8">
-
-  {/* Custom Input */}
-  <div className="flex items-center gap-4 bg-white border rounded-full px-4 py-2 shadow-sm">
-
-    <button
-      onClick={() => setInputMinutes(prev => Math.max(1, prev - 5))}
-      className="text-lg px-2 text-gray-500 hover:text-indigo-600"
-    >
-      −
-    </button>
-
-    <input
-      type="number"
-      value={inputMinutes}
-      onChange={(e) => setInputMinutes(Number(e.target.value))}
-      className="w-16 text-center text-lg font-semibold outline-none"
-    />
-
-    <button
-      onClick={() => setInputMinutes(prev => prev + 5)}
-      className="text-lg px-2 text-gray-500 hover:text-indigo-600"
-    >
-      +
-    </button>
-
-    <span className="text-gray-400 text-sm">min</span>
-
-  </div>
-
-
-  {/* Apply Button */}
-  <button
-    onClick={setCustomTime}
-    className="px-5 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition"
-  >
-    Apply Time
-  </button>
-
-</div>
-
-
-    {/* CONTROLS */}
-    <div className="flex gap-4">
-
-      <button
-        onClick={startTimer}
-        className="px-6 py-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition shadow"
-      >
-        Start
-      </button>
-
-      <button
-        onClick={pauseTimer}
-        className="px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
-      >
-        Pause
-      </button>
-
-      <button
-        onClick={resetTimer}
-        className="px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
-      >
-        Reset
-      </button>
-
-    </div>
-
-  </div>
-
-)
+  );
 }

@@ -11,6 +11,7 @@ import ProtectedRoute from "./utils/ProtectedRoute"
 import CursorEffect from "./components/CursorEffect"
 import Tasks from "./pages/Tasks"
 import "./index.css"
+import Timer from "./components/Timer"
 
 
 function App() {
@@ -55,6 +56,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/timer"
+          element={
+            <ProtectedRoute>
+              <Timer />
             </ProtectedRoute>
           }
         />
