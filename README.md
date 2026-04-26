@@ -79,11 +79,16 @@ Enable CORS in backend
 
 📱 Mobile responsiveness improvements
 
+<img width="1884" height="856" alt="Screenshot 2026-04-26 122541" src="https://github.com/user-attachments/assets/79e00633-c048-4b7f-9e82-dbf236eb27ed" />
+<img width="1888" height="860" alt="Screenshot 2026-04-26 122526" src="https://github.com/user-attachments/assets/f5189594-d546-4211-8142-a2f5e8f6461d" />
+<img width="1890" height="866" alt="Screenshot 2026-04-26 122352" src="https://github.com/user-attachments/assets/0532c4d4-f33a-4643-8e27-390019c968a9" />
+<img width="1885" height="858" alt="Screenshot 2026-04-26 122410" src="https://github.com/user-attachments/assets/cfb8347d-4a13-4864-ad55-53b7746a9c24" />
+<img width="1898" height="861" alt="Screenshot 2026-04-26 122432" src="https://github.com/user-attachments/assets/882f8f9b-55aa-4d74-b01e-d68ae86f1a25" />
+<img width="1885" height="867" alt="Screenshot 2026-04-26 122445" src="https://github.com/user-attachments/assets/79c51d84-1bed-4d6f-b009-21e0ec56b6af" />
+<img width="1890" height="864" alt="Screenshot 2026-04-26 122502" src="https://github.com/user-attachments/assets/a7375ad5-e1f9-4b46-bf1c-99f6479ec6fa" />
 
-<img width="1852" height="888" alt="Screenshot 2026-03-18 225907" src="https://github.com/user-attachments/assets/32e582ab-a1e1-40d9-93d4-960934cdbf1e" />
-<img width="1862" height="904" alt="Screenshot 2026-03-18 225819" src="https://github.com/user-attachments/assets/550173b7-5dc0-482c-9d4e-08c57ab33eb2" />
-<img width="1843" height="897" alt="Screenshot 2026-03-18 225832" src="https://github.com/user-attachments/assets/5a881926-9ff6-4021-8bc2-4fbfdda50d18" />
-<img width="1779" height="884" alt="Screenshot 2026-03-18 225845" src="https://github.com/user-attachments/assets/36191172-f970-4375-b8ed-5f0c617dd94b" />
-<img width="1587" height="882" alt="Screenshot 2026-03-18 225855" src="https://github.com/user-attachments/assets/d8a9d3b2-9a41-4e82-bbbc-62595fccff41" />
+
+
+
 
 
